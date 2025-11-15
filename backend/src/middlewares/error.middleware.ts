@@ -1,5 +1,5 @@
-import ApiError from "../utils/ApiError.js";
-import ApiResponse from "../utils/ApiResponse.js";
+import ApiError from "../utils/ApiError";
+import ApiResponse from "../utils/ApiResponse";
 import { Request, Response, NextFunction } from "express";
 
 export const errorMiddleware = (
@@ -8,6 +8,7 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  
   const status = err.statusCode || 500;
   const msg = err.message || "Internal Server Error";
 
