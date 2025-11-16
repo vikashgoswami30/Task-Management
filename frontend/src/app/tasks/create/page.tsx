@@ -1,57 +1,66 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { createTask } from "../../../lib/api"
-import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
-import { getAccessToken } from "../../../lib/auth"
+import AppLayout from "../../../components/AppLayout";
+import { useState } from "react";
+import { createTask } from "../../../lib/api";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { getAccessToken } from "../../../lib/auth";
 
 export default function CreateTaskPage() {
-  const router = useRouter()
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // ensure client auth
   if (!getAccessToken()) {
-    // during render we can't redirect; effect handles on mount
+    router.push("/");
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
+
     try {
-      await createTask({ title, description })
-      toast.success("Task created")
-      router.push("/dashboard")
+      await createTask({ title, description });
+      toast.success("Task created");
+      router.push("/dashboard");
     } catch (err) {
-      toast.error("Create failed")
+      toast.error("Failed to create task");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="p-6 max-w-md mx-auto mt-8">
-      <h1 className="text-2xl font-bold mb-4">Create Task</h1>
+    <AppLayout>
+      <div className="max-w-xl mx-auto w-full text-white">
+        <h1 className="text-2xl font-bold mb-4">Create New Task</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          className="border p-2 w-full"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          className="border p-2 w-full"
-          placeholder="Description (optional)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <button className="bg-blue-600 text-white p-2 w-full rounded" disabled={loading}>
-          {loading ? "Creating..." : "Create Task"}
-        </button>
-      </form>
-    </div>
-  )
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            className="border border-neutral-700 bg-white text-black placeholder-gray-600 p-2 w-full rounded"
+            placeholder="Task title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+
+          <textarea
+            className="border border-neutral-700 bg-white text-black placeholder-gray-600 p-2 w-full rounded"
+            placeholder="Description (optional)"
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white w-full py-2 rounded transition"
+            disabled={loading}
+          >
+            {loading ? "Creating Task..." : "Create Task"}
+          </button>
+        </form>
+      </div>
+    </AppLayout>
+  );
 }

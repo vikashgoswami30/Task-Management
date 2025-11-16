@@ -1,28 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { loginUser } from "../lib/api"
-import { setTokens } from "../lib/auth"
-import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
+import { useState } from "react";
+import { loginUser } from "../lib/api";
+import { setTokens } from "../lib/auth";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const res = await loginUser({ email, password })
-      setTokens(res.data.data.accessToken, res.data.data.refreshToken)
-      toast.success("Login successful")
-      router.push("/dashboard")
+      const res = await loginUser({ email, password });
+      setTokens(res.data.data.accessToken, res.data.data.refreshToken);
+      localStorage.setItem("user", JSON.stringify(res.data.data.user)); 
+
+      toast.success("Login successful");
+      router.push("/dashboard");
     } catch {
-      toast.error("Invalid login")
+      toast.error("Invalid login");
     }
-  }
+  };
 
   return (
     <div className="p-6 max-w-md mx-auto mt-8">
@@ -43,7 +45,17 @@ export default function LoginPage() {
         <button className="bg-blue-500 w-full text-white p-2 rounded">
           Login
         </button>
+        <p className="text-center mt-4">
+          New user?{" "}
+          <button
+            type="button"
+            onClick={() => router.push("/register")}
+            className="text-blue-600 underline"
+          >
+            Register here
+          </button>
+        </p>
       </form>
     </div>
-  )
+  );
 }

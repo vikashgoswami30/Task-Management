@@ -8,17 +8,30 @@ export const createTask = async(userId:number,title:string, description:string)=
     });
 };
 
-export const getTasks = async(userId:number,page:number,take:number,status?:string,search?:string)=>{
-    return await prisma.task.findMany({
-        where:{
-            userId,
-            status:status?status === "true" :undefined,
-            title:search ? {contains:search,mode:"insenitive"}:undefined
-        },
-        skip:(page-1)*take,
-        take
-    });
+export const getTasks = async (
+  userId: number,
+  page: number,
+  take: number,
+  status?: string,
+  search?: string
+) => {
+  return await prisma.task.findMany({
+    where: {
+      userId,
+      status: status ? status === "true" : undefined,
+
+      title: search
+        ? {
+            contains: search.toLowerCase(),
+          }
+        : undefined,
+    },
+    skip: (page - 1) * take,
+    take,
+  });
 };
+
+
 
 export const updateTask = async(id:number,userId:number,data:any)=>{
     const task = await prisma.task.findUnique({
@@ -34,6 +47,7 @@ export const updateTask = async(id:number,userId:number,data:any)=>{
     });
 };
 
+
 export const deleteTask = async(id:number, userId:number)=>{
    const task = await prisma.task.findUnique({
     where:{id}
@@ -47,3 +61,14 @@ export const deleteTask = async(id:number, userId:number)=>{
     where:{id}
    });
 }
+export const getTaskById = async (id: number, userId: number) => {
+  const task = await prisma.task.findUnique({
+    where: { id },
+  });
+
+  if (!task || task.userId !== userId) {
+    throw new ApiError(404, "Task not found");
+  }
+
+  return task;
+};

@@ -1,5 +1,4 @@
 import Link from "next/link"
-
 type Task = {
   id: number
   title: string
@@ -17,6 +16,7 @@ export default function TaskCard({
   onToggle: (id: number, status: boolean) => void
 }) {
   return (
+    
     <div className="border p-4 rounded flex justify-between items-start">
       <div className="max-w-[70%]">
         <h2 className="text-lg font-semibold">{task.title}</h2>

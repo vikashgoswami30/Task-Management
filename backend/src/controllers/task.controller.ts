@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler";
 import {Request,Response} from "express";
 import ApiResponse from "../utils/ApiResponse";
-import { createTask, getTasks, updateTask,deleteTask } from "../services/task.service";
+import { createTask, getTasks, updateTask,deleteTask, getTaskById } from "../services/task.service";
 
 export const create = asyncHandler(async(req:Request,res:Response)=>{
     const {title,description}= req.body;
@@ -35,6 +35,12 @@ export const remove = asyncHandler(async (req:Request,res:Response) => {
 
   return res.status(200).json(new ApiResponse(200, null, "Task deleted"));
 });
+export const getOne = asyncHandler(async (req: Request, res: Response) => {
+  const task = await getTaskById(Number(req.params.id), req.user.id);
+
+  return res.status(200).json(new ApiResponse(200, task, "Task fetched"));
+});
+
 
 export const toggle = asyncHandler(async (req:Request,res:Response) => {
   const updated = await updateTask(Number(req.params.id), req.user.id, {
