@@ -16,7 +16,7 @@ export const registerService = async (
     throw new ApiError(400, "User already exist");
   }
 
-  const hashed = await bcrypt.hash(password, 10);
+  const hashed = await bcrypt.hash(password, 8);
 
   const user = await prisma.user.create({
     data: { name, email, password: hashed },
